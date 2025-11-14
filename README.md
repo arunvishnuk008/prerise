@@ -11,5 +11,5 @@ This just uses Go's amazing standard library, even for APIs and authentication. 
 just use the makefile
 
 ```bash
-make run
+$> make run
 ```
