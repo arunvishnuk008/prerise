@@ -35,8 +35,14 @@ func main() {
 	mux = middleware.Apply(mux,
 		middleware.PanicRecovery(logger),
 	)
-	// CORS middleware
-	mux = cors.Default().Handler(mux)
+	// cors
+	options := cors.Options{
+		AllowedOrigins: []string{"http://localhost:4200","https://crimson-sunrise.site"},
+		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodHead, http.MethodOptions},
+		AllowCredentials: true,
+		AllowedHeaders: []string{"*"},
+	}
+	mux = cors.New(options).Handler(mux)
 	server := &http.Server{
 		Addr:    os.Getenv("APP_PORT"),
 		Handler: mux,

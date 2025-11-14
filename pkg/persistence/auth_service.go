@@ -29,7 +29,7 @@ func Login(loginRequest model.LoginRequest) (model.LoginResponse, error) {
 		return model.LoginResponse{}, err
 	}
 	log.Print("Encrypting token..")
-	token := encryptToken(user)
+	token := encryptToken(*user)
 	if token == "" {
 		return model.LoginResponse{}, errors.New("unable to perform login")
 	}
@@ -40,8 +40,8 @@ func Login(loginRequest model.LoginRequest) (model.LoginResponse, error) {
 	}
 	log.Printf("Token saved to db.")
 	return model.LoginResponse{
-	AccessToken: 	token,
-	}, nil
+		AccessToken: 	token,
+	},nil
 }
 
 
@@ -54,7 +54,7 @@ func saveToken(db *sql.DB, token string) error {
 	return nil
 }
 
-func FindUser(db *sql.DB, userName string, password string) (model.User, error) {
+func FindUser(db *sql.DB, userName string, password string) (*model.User, error) {
 	const query =
 		"SELECT u.id as user_id," +
 			"u.user_name as user_name," +
@@ -73,7 +73,7 @@ func FindUser(db *sql.DB, userName string, password string) (model.User, error) 
 	}(result)
 	if err != nil {
 		log.Printf("Error while querying user :%v", err.Error())
-		return model.User{}, err
+		return nil, err
 	}
 
 	if result.Next() {
@@ -81,24 +81,24 @@ func FindUser(db *sql.DB, userName string, password string) (model.User, error) 
 		err = result.Scan(&user.ID, &user.UserName, &user.Password, &user.Name, &user.CreatedAtInternal, &user.Role)
 		if err != nil {
 			log.Print("Error during result scanning")
-			return model.User{}, err
+			return nil, err
 		}
 		loc, _ := time.LoadLocation("Asia/Kolkata")
 		createdAt, err := common.EpochSecondToTime(strconv.Itoa(user.CreatedAtInternal))
 		if err != nil {
-			return model.User{}, err
+			return nil, err
 		}
 		createdAt = createdAt.In(loc)
 		user.CreatedAt = createdAt.Format(time.RFC3339)
 		// now check password
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 		if err != nil {
-			return model.User{}, err
+			return nil, err
 		}
-		return user, nil
+		return &user, nil
 	}
 	log.Print("No result found")
-	return model.User{}, errors.New("unable to authenticate user")
+	return nil, errors.New("unable to authenticate user")
 }
 
 func FindToken(token string, db *sql.DB) (bool, error) {

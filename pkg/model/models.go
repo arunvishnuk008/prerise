@@ -10,7 +10,7 @@ type LoginResponse struct {
 }
 
 type BlogPost struct {
-	ID uint64 `json:"id"`
+	ID int64 `json:"id"`
 	Title string `json:"title"`
 	TagLine string `json:"tagline"`
 	Tags string `json:"tags"`
@@ -20,13 +20,15 @@ type BlogPost struct {
 }
 
 type HotTake struct {
-	ID uint64 `json:"id"`
+	ID int64 `json:"id"`
 	Title string `json:"title"`
 	Details string `json:"details"`
+	CreatedAt string `json:"created_at"`
+	CreatedAtInternal int
 }
 
 type User struct {
-	ID uint64 `json:"id"`
+	ID int64 `json:"id"`
 	UserName string `json:"user_name"`
 	Name string `json:"name"`
 	Role string `json:"role"`
