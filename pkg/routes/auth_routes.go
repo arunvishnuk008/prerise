@@ -17,9 +17,8 @@ func Login(response http.ResponseWriter, request *http.Request) {
 		log.Fatalf("Unable to proceed due to error %s", err.Error())
 		return
 	}
-	log.Printf("login request body is :: %s", string(requestBody))
+	
 	err = json.Unmarshal(requestBody, &loginRequest)
-
 	if err != nil {
 		log.Fatalf("Unable to deserialize request body due to error : %s", err.Error())
 		return

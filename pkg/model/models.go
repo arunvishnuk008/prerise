@@ -17,6 +17,8 @@ type BlogPost struct {
 	Content string `json:"content"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
+	CreatedAtUnix int
+	UpdatedAtUnix int
 }
 
 type HotTake struct {
