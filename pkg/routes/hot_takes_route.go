@@ -19,9 +19,11 @@ func GetAllHotTakes(response http.ResponseWriter, request *http.Request ) {
 	allHotTakes, err := persistence.GetAllHotTakes(db.DB)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	if allHotTakes == nil {
 		common.WriteJsonError(errors.New("no hot takes found"), response, http.StatusNotFound)
+		return
 	}
 	response.Header().Add("Content-Type","application/json")
 	jsonResponse, _ := json.Marshal(allHotTakes)
@@ -38,17 +40,21 @@ func GetHotTakeByID(response http.ResponseWriter, request *http.Request) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		common.WriteJsonError(err, response,http.StatusUnprocessableEntity)
+		return
 	}
 	hotTake, err := persistence.GetHotTakeByID(db.DB,int64(id))
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	if hotTake == nil {
 		common.WriteJsonError(errors.New("hot-take not found"), response, http.StatusNotFound)
+		return
 	}
 	jsonResponse, err := json.Marshal(hotTake)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	response.Header().Add("Content-Type","application/json")
 	_, err = response.Write(jsonResponse)
@@ -63,21 +69,26 @@ func NewHotTake(response http.ResponseWriter, request *http.Request) {
 	requestBody, err := io.ReadAll(request.Body)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	err = json.Unmarshal(requestBody, &hotTake)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	createdHotTake, err := persistence.AddHotTake(db.DB,hotTake)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	if createdHotTake == nil {
 		common.WriteJsonError(errors.New("unable to save hot take"), response, http.StatusUnprocessableEntity)
+		return
 	}
 	jsonResponse, err := json.Marshal(createdHotTake)
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	response.Header().Add("Content-Type","application/json")
 	response.WriteHeader(http.StatusCreated)
@@ -93,13 +104,16 @@ func DeleteHotTakeByID(response http.ResponseWriter, request *http.Request) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		common.WriteJsonError(err, response,http.StatusUnprocessableEntity)
+		return
 	}
 	ok, err := persistence.DeleteHotTake(db.DB,int64(id))
 	if err != nil {
 		common.WriteJsonError(err, response, http.StatusUnprocessableEntity)
+		return
 	}
 	if !ok {
 		common.WriteJsonError(errors.New("unable to delete hot-take"), response, http.StatusUnprocessableEntity)
+		return
 	}
 	response.Header().Add("Content-Type","application/json")
 	response.WriteHeader(http.StatusNoContent)
