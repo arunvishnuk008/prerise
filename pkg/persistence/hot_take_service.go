@@ -12,7 +12,7 @@ import (
 
 func GetAllHotTakes(db *sql.DB) ([]model.HotTake, error) {
 	const query = "" +
-		"SELECT ht.id, ht.title, ht.details, ht.created_at from hot_takes ht"
+		"SELECT ht.id, ht.title, ht.details, ht.created_at from hot_takes ht ORDER BY ht.created_at DESC "
 	resultSet, err := db.Query(query)
 	if err != nil {
 		return nil, err

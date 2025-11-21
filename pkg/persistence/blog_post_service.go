@@ -12,7 +12,7 @@ import (
 
 func GetAllBlogPosts(db *sql.DB) ([]model.BlogPost, error) {
 	const query = "SELECT bp.id, bp.title, bp.tag_line, bp.tags, bp.content, " +
-		"bp.created_at, bp.updated_at from blog_posts bp"
+		"bp.created_at, bp.updated_at from blog_posts bp ORDER BY bp.created_at DESC "
 	result, err := db.Query(query)
 	if err != nil {
 		return nil, err
